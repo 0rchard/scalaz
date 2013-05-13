@@ -242,6 +242,9 @@ sealed trait Validation[+E, +A] {
       }
     }
 
+  /** If the success type `A` of this `Validation` is itself a `Validation`, flatten */
+  def join[EE >: E, B](implicit ev: A => Validation[EE, B]): Validation[EE, B] = this flatMap ev
+    
   /** Ensures that the success value of this validation satisfies the given predicate, or fails with the given value. */
   def ensure[EE >: E](onFailure: => EE)(f: A => Boolean): Validation[EE, A] = this match {
     case Success(a) => if (f(a)) this else Failure(onFailure)

@@ -81,6 +81,14 @@ class ValidationTest extends Spec {
       (fail findSuccess succ).shows must be_===(succ.shows)
     }
   }
+  
+  "join" should {
+      import syntax.validation._
+      "flatten nested Validations" in {
+          "Bah".fail[Validation[String, Float]].join must be_===("Bah".fail[Float])
+          2.success[String].success[String].join must be_===(2.success[String])
+      }
+  }
 
   object instances {
     def show[E: Show, A: Show] = Show[Validation[E, A]]
